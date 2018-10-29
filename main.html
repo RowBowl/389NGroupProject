@@ -11,56 +11,23 @@
 <body>
 
     <div class="container">
+        <h1>Login to Planner:</h1>
+        <!-- TO DO: Client side and serverside validation, store user in database-->
+        <form class="login" action="planner.php" method="post">
 
-        <h1>Goals and Plans</h1>
-        <h2>January 2019</h2>
+            <div class="form-group">
+                <label for="username">Username:</label>
+                <input type="username" class="form-control" id="username">
+            </div>
 
-        <div class="row">
+            <div class="form-group">
+                <label for="password">Password:</label>
+                <input type="password" class="form-control" id="password">
+            </div>
 
-            <fieldset class="col-lg-6">
-                <legend>Goals and Tasks</legend>
+            <button type="submit" class="btn btn-default">Submit</button>
 
-                <div class="tasks-to-do">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-
-                            <div class="row">
-                                <div class="task-text col-lg-10">TASK 1</div>
-                                <button type="button" class="btn btn-danger  move-right ">X</button>
-                                <button type="button" class="btn btn-success remove  ">></button>
-
-                            </div>
-
-                        </div>
-                        <div class="panel-body">BLAH BLAH BLAH</div>
-                    </div>
-                </div>
-
-                <button type="button" class="btn btn-primary btn-lg btn-block" id="add-task">+</button>
-
-            </fieldset>
-
-            <fieldset class="col-lg-6">
-                <legend>Completed Tasks</legend>
-
-                <div class="tasks-completed">
-                    <div class="panel panel-default">
-                        <div class="panel-heading">
-
-                            <div class="row">
-                                <div class="task-text col-lg-10">COMPLETED TASK 1</div>
-                                <button type="button" class="btn btn-success remove  "><</button>
-                                <button type="button" class="btn btn-danger  move-left">X</button>
-
-                            </div>
-
-                        </div>
-                        <div class="panel-body">BLAH BLAH BLAH</div>
-                    </div>
-                </div>
-
-            </fieldset>
-        </div>
+        </form>
     </div>
 
     <script src="bootstrap/jquery-3.2.1.min.js"></script>
