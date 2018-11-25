@@ -1,0 +1,15 @@
+To-do:
+	. Login
+		. User database
+		. Registration
+		. Login functionality
+	. Planner
+		. Finish layout
+			. "Image of the Month"
+			. Possibly choose a collection of placeholder images, similar to default screensavers. Just nondescript pretty picturess that fill in the blank until the user wants to change that to something specific.
+		. Integrate SQL database
+		. Include navigations to other pages (task edit and logout)
+		. Navigation between months
+	. Task Edit
+		. Layout
+		. SQL database
