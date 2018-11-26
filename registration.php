@@ -18,6 +18,7 @@
 		Password: <input type="password" id="pword" name="pword" placeholder="******" required><br><br>
 		<button type="submit" class="btn btn-default" name="submit" id="submit">Submit</button>
 		<button type="reset" class="btn btn-default" id="reset">Reset</button>
+	</form>
 		<?php
 			#echo "here1";
 			if(isset($_POST['submit'])){
@@ -32,20 +33,27 @@
 						echo "no good";
 						die($db_connection->connect_error); 
 					}else{
-						echo "logged into dB okay.";
+						echo "<br>logged into dB okay.<br>";
 					}
 				#}
 				if(isset($_POST['pword'])){
 						$query = "insert into users (firstname, lastname, username, password) values(\"".$_POST['fname']."\",\"".$_POST['lname']."\",\"".$_POST['uname']."\",\"".$_POST['pword']."\")";
-						echo $query;
+						#echo $query;
 				}
 				if(isset($query)){
 					$result = $db_connection->query($query); 
-					if (!$result) { echo "<br>The user could not be created. Please check that you have a UNIQUE username under 20 characters!";}
+					if (!$result) { echo "<br>User has not been created yet. Please be sure that you have a UNIQUE username under 20 characters!<br>";}else{
+						echo '<script language="javascript">';
+						echo 'alert("account succesfully created")';
+						echo '</script>';
+						echo '<br><form action="./index.html" novalidate>'; 
+						echo '<button type="submit" class="btn btn-default" name="submit" value="administrative">return to main menu</button>'; 
+						echo '</form>'; 
+						#header('Location:./index.html');
+					}
 				}
 			}
 		?>
-	</form>
 
 
 
