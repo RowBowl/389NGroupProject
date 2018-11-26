@@ -13,3 +13,4 @@ To-do:
 	. Task Edit
 		. Layout
 		. SQL database
+		-registration
