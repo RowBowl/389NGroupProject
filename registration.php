@@ -30,7 +30,7 @@
 					$database="scheduleusers";
 					$db_connection=new mysqli($host, $user, $password, $database); 
 					if ($db_connection->connect_error) { 
-						echo "no good";
+						echo "<br>database is not set up properly/was not able to properly connect to dB. This page is invalid<br>";
 						die($db_connection->connect_error); 
 					}else{
 						echo "<br>logged into dB okay.<br>";
@@ -44,7 +44,7 @@
 					$result = $db_connection->query($query); 
 					if (!$result) { echo "<br>User has not been created yet. Please be sure that you have a UNIQUE username under 20 characters!<br>";}else{
 						echo '<script language="javascript">';
-						echo 'alert("account succesfully created")';
+						echo 'alert("account successfully created")';
 						echo '</script>';
 						echo '<br><form action="./index.html" novalidate>'; 
 						echo '<button type="submit" class="btn btn-default" name="submit" value="administrative">return to main menu</button>'; 
