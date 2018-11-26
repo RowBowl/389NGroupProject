@@ -1,15 +1,3 @@
-<?php
-
-
-if (isset($_POST["submitform"])) {
-    $user = $_POST["username"];
-	$password = $_POST["password"];
-
-	
-}
-
-
-$body <<< LABEL
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -20,15 +8,16 @@ $body <<< LABEL
 	<link rel="stylesheet" href="./css/main.css">
 </head>
 <body>
-	<!-- TO DO: add in php code for date and storing tasks in database -->
-	<!-- TO DO: add in option to navigate between different months. -->
-	<!-- TO DO: add in option to change the month's image. -->
 	<div class="container">
 
 		<h1>Goals and Plans</h1>
-		<h2 id = "today"></h2>
-		<h3>January 2019 Schedule</h3>
-
+		<h2 id = "today"></h2> 
+		<h3 id = "currMonth">January 2019 Schedule</h3>
+		
+		<!-- These look pretty bad visually. Feel free to change them up. -->
+		<button type = "button" class = "btn btn-secondary" onclick = "updateMonth(-1)"><</button>
+		<button type = "button" class = "btn btn-secondary" onclick = "updateMonth(1)">></button>
+		
 		<div class="row">
 			<fieldset class="col-lg-6">
 				<legend>Goals and Tasks</legend>
@@ -45,7 +34,7 @@ $body <<< LABEL
 						</div>
 						<div class = "panel-body">This is a description of the task. This is a description of the task. This is a description of the task. This is a description of the task.</div>
 					</div>
-
+					
 					<div class="panel panel-default">
 						<div class = "panel-heading">
 							<div class = "row">
@@ -89,19 +78,76 @@ $body <<< LABEL
 	<script src="bootstrap/jquery-3.2.1.min.js"></script>
 	<script src="bootstrap/js/bootstrap.min.js"></script>
 	<script>
+		var month;
+		var year;
 		initialize();
-
+		
 		function initialize() {
 			var d = new Date();
 			var str = d.toDateString();
+			month = d.getMonth();
+			year = d.getFullYear();
 			document.getElementById("today").innerHTML = str;
+			updateCurrMonth();
+		}
+		
+		function monthStr(arg) {
+			if (arg == 0)
+				return "January";
+			
+			else if (arg == 1)
+				return "February";
+			
+			else if (arg == 2)
+				return "March";
+			
+			else if (arg == 3)
+				return "April";
+			
+			else if (arg == 4)
+				return "May";
+			
+			else if (arg == 5)
+				return "June";
+			
+			else if (arg == 6)
+				return "July";
+			
+			else if (arg == 7)
+				return "August";
+			
+			else if (arg == 8)
+				return "September";
+			
+			else if (arg == 9)
+				return "October";
+			
+			else if (arg == 10)
+				return "November";
+			
+			else
+				return "December";
+		}
+		
+		function updateMonth(i) {
+			month += i;
+			
+			if (month < 0) {
+				month = 11;
+				year--;
+			}
+			
+			else if (month > 11) {
+				month = 0;
+				year++;
+			}
+			
+			updateCurrMonth();
+		}
+		
+		function updateCurrMonth() {
+			document.getElementById("currMonth").innerHTML = monthStr(month) + " " + year + " Schedule";
 		}
 	</script>
 </body>
 </html>
-
-
-LABEL;
-
-
- ?>
