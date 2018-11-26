@@ -1,3 +1,15 @@
+<?php
+
+
+if (isset($_POST["submitform"])) {
+    $user = $_POST["username"];
+	$password = $_POST["password"];
+
+	
+}
+
+
+$body <<< LABEL
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -14,9 +26,9 @@
 	<div class="container">
 
 		<h1>Goals and Plans</h1>
-		<h2 id = "today"></h2> 
+		<h2 id = "today"></h2>
 		<h3>January 2019 Schedule</h3>
-		
+
 		<div class="row">
 			<fieldset class="col-lg-6">
 				<legend>Goals and Tasks</legend>
@@ -33,7 +45,7 @@
 						</div>
 						<div class = "panel-body">This is a description of the task. This is a description of the task. This is a description of the task. This is a description of the task.</div>
 					</div>
-					
+
 					<div class="panel panel-default">
 						<div class = "panel-heading">
 							<div class = "row">
@@ -78,7 +90,7 @@
 	<script src="bootstrap/js/bootstrap.min.js"></script>
 	<script>
 		initialize();
-		
+
 		function initialize() {
 			var d = new Date();
 			var str = d.toDateString();
@@ -87,3 +99,9 @@
 	</script>
 </body>
 </html>
+
+
+LABEL;
+
+
+ ?>
