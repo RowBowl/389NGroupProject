@@ -1,6 +1,4 @@
-<?php
-	session_start();
-	?>
+
 
 
 <!DOCTYPE html>
@@ -16,7 +14,9 @@
 </head>
 <body>
 	<div class="container">
-	
+	<?php
+	session_start();
+	?>
 
 
 	<div class="row">
