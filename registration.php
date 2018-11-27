@@ -10,15 +10,17 @@
 </head>
 
 <body>
-	<form action="<?php $_SERVER['PHP_SELF'] ?>" method="post">  
-		<h1>User Registration</h1><br>
-		First Name: <input type="text" id="fname" name="fname" placeholder="Kevin" required><br><br>
-		Last Name: <input type="text" id="lname" name="lname" placeholder="Hung" required><br><br>
-		User Name: <input type="text" id="uname" name="uname" placeholder="khung" required><br><br>
-		Password: <input type="password" id="pword" name="pword" placeholder="******" required><br><br>
-		<button type="submit" class="btn btn-default" name="submit" id="submit">Submit</button>
-		<button type="reset" class="btn btn-default" id="reset">Reset</button>
-	</form>
+	<div class="container">
+		<form action="<?php $_SERVER['PHP_SELF'] ?>" method="post">  
+			<h1>User Registration</h1><br>
+			First Name: <input type="text" class="form-control" id="fname" name="fname" placeholder="Kevin" required><br><br>
+			Last Name: <input type="text" class="form-control" id="lname" name="lname" placeholder="Hung" required><br><br>
+			User Name: <input type="text" class="form-control" id="uname" name="uname" placeholder="khung" required><br><br>
+			Password: <input type="password" class="form-control" id="pword" name="pword" placeholder="******" required><br><br>
+			<button type="submit" class="btn btn-default" name="submit" id="submit">Submit</button> &nbsp
+			<button type="reset" class="btn btn-default" id="reset">Reset</button>
+		</form>
+	<div>
 		<?php
 			#echo "here1";
 			if(isset($_POST['submit'])){
