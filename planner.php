@@ -53,10 +53,10 @@
 	}
 
  ?>
- <h3>Change motivational picture:</h3>
+ <h5>Change motivational picture:</h5>
 <form action="/action_page.php">
-  Select a file: <input type="file" name="myFile">
-  <input type="submit">
+ <input type="file" name="myFile">
+  <input class = "btn btn-default" type="submit">
 </form>
 		<h1>Goals and Plans</h1>
 		
