@@ -21,7 +21,8 @@ function checkLogin(){
 
     let regexuser = /^[A-Za-z]+$/;
     let regexpass = /^[A-Za-z0-9]+$/
-    if(username.length < 6 || username.length > 20 || password.length < 6 || password.length > 20
+    console.log(username + " " + password);
+    if(username.length < 1 || username.length > 20 || password.length < 1 || password.length > 20
         || !(regexuser.test(username)) || !(regexpass.test(password))){
         alert("Invalid login information.");
         if(attempts >= 2){

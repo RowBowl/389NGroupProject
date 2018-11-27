@@ -9,6 +9,8 @@
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 	<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" >
 	<link rel="stylesheet" href="./css/main.css">
+	<link rel="stylesheet" href="./jquery-ui-1.12.1/jquery-ui.min.css">
+
 </head>
 <body>
 	<div class="container">
@@ -86,7 +88,7 @@
 				<div class = "panel-heading">
 				<div class = "row">
 				<div class = "task-text col-lg-9"><font size = "5">$key</font></div>
-				<button type = "button"  class = "btn btn-info" name = "editTask" onclick="window.location='manageTask.php';">...</button>
+				<button type = "button"  class = "btn btn-info"  onclick="editTask('$key','$value')">...</button>
 				<button type = "button"  class = "btn btn-danger" onclick="removeTask('$key','$value')">X</button>
 				<button type = "button"  class = "btn btn-success" onclick="completeTask('$key','$value')">></button>
 				</div>
@@ -174,104 +176,141 @@ LABEL;
 				</div>
 
 			</fieldset>
+			<div id="dialog" hidden="hidden" >
+				<div class = "form-group">
+					<label for = "text">Edit Task Title:</label>
+					<input type = "text" class = "form-control" name="taskname">
+				</div>
+
+				<div class = "form-group">
+					<label for = "text">Edit Details:</label>
+					<textarea rows = "4" class = "form-control" name="description"></textarea>
+				</div>
+			</div>
 		</div>
 	</div>
 
 	<script src="bootstrap/jquery-3.2.1.min.js"></script>
 	<script src="bootstrap/js/bootstrap.min.js"></script>
+	<script src="./jquery-ui-1.12.1/external/jquery/jquery.js"></script>
+	<script src="./jquery-ui-1.12.1/jquery-ui.min.js"></script>
 	<script>
-		var month;
-		var year;
-		initialize();
-		function changePic(){
-			document.getElementById("pic").src=newPic;
-		}
-		function initialize() {
-			var d = new Date();
-			var str = d.toDateString();
-			month = d.getMonth();
-			year = d.getFullYear();
-			document.getElementById("today").innerHTML +=  str;
-			updateCurrMonth();
+	var month;
+	var year;
+	initialize();
+	function changePic(){
+		document.getElementById("pic").src=newPic;
+	}
+	function initialize() {
+		var d = new Date();
+		var str = d.toDateString();
+		month = d.getMonth();
+		year = d.getFullYear();
+		document.getElementById("today").innerHTML +=  str;
+		updateCurrMonth();
 
-		}
+	}
 
-		function removeTask(name,value){
+	function editTask(name,value){
+		let newTask;
+		let valTask;
+		$(document).ready(function() {
+			$("#dialog").dialog({
 
-			$.post('./manageTask.php', {key:name, whatToDo:"remove"}, function(response) {
-				// Log the response to the console
-				console.log("Response: "+response);
+				buttons: {
+					'OK': function () {
+						let name = $('input[name="taskname"]').val();
+						let description = $('input[name="description"]').val();
+						console.log(name + " " + description);
+						$(this).dialog('close');
+					},
+					'Cancel': function () {
+						$(this).dialog('close');
+					}
+				},
+
+				close: function(event, ui) {
+
+				}
 			});
-			document.getElementById(`${name}${value}`).outerHTML = "";
+		});
+	}
+	function removeTask(name,value){
+
+		$.post('./manageTask.php', {key:name, whatToDo:"remove"}, function(response) {
+			// Log the response to the console
+			console.log("Response: "+response);
+		});
+		document.getElementById(`${name}${value}`).outerHTML = "";
 
 
+	}
+	function completeTask(name,value){
+		$.post('./manageTask.php', {key:name, whatToDo:"complete"}, function(response) {
+			// Log the response to the console
+			console.log("Response: "+response);
+		});
+		document.getElementById(`${name}${value}`).outerHTML = "";
+		location.reload();
+	}
+
+	function monthStr(arg) {
+		if (arg == 0)
+		return "January";
+
+		else if (arg == 1)
+		return "February";
+
+		else if (arg == 2)
+		return "March";
+
+		else if (arg == 3)
+		return "April";
+
+		else if (arg == 4)
+		return "May";
+
+		else if (arg == 5)
+		return "June";
+
+		else if (arg == 6)
+		return "July";
+
+		else if (arg == 7)
+		return "August";
+
+		else if (arg == 8)
+		return "September";
+
+		else if (arg == 9)
+		return "October";
+
+		else if (arg == 10)
+		return "November";
+
+		else
+		return "December";
+	}
+
+	function updateMonth(i) {
+		month += i;
+
+		if (month < 0) {
+			month = 11;
+			year--;
 		}
-		function completeTask(name,value){
-			$.post('./manageTask.php', {key:name, whatToDo:"complete"}, function(response) {
-				// Log the response to the console
-				console.log("Response: "+response);
-			});
-			document.getElementById(`${name}${value}`).outerHTML = "";
-			location.reload();
+
+		else if (month > 11) {
+			month = 0;
+			year++;
 		}
 
-		function monthStr(arg) {
-			if (arg == 0)
-				return "January";
+		updateCurrMonth();
+	}
 
-			else if (arg == 1)
-				return "February";
-
-			else if (arg == 2)
-				return "March";
-
-			else if (arg == 3)
-				return "April";
-
-			else if (arg == 4)
-				return "May";
-
-			else if (arg == 5)
-				return "June";
-
-			else if (arg == 6)
-				return "July";
-
-			else if (arg == 7)
-				return "August";
-
-			else if (arg == 8)
-				return "September";
-
-			else if (arg == 9)
-				return "October";
-
-			else if (arg == 10)
-				return "November";
-
-			else
-				return "December";
-		}
-
-		function updateMonth(i) {
-			month += i;
-
-			if (month < 0) {
-				month = 11;
-				year--;
-			}
-
-			else if (month > 11) {
-				month = 0;
-				year++;
-			}
-
-			updateCurrMonth();
-		}
-
-		function updateCurrMonth() {
-			document.getElementById("currMonth").innerHTML = monthStr(month) + " " + year + " Schedule";
-		}
+	function updateCurrMonth() {
+		document.getElementById("currMonth").innerHTML = monthStr(month) + " " + year + " Schedule";
+	}
 	</script>
 </body>
 </html>
