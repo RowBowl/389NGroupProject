@@ -16,10 +16,6 @@
 	<div class="container">
 
 		<?php
-			echo "<img src=./21b9dfe29ac942daae2c96d9789f9ccc.jpg width=\"150\" height=\"150\" id=\"pic\" class=\"center\"></img>";
-			#echo "<input type="file" name="newImage">";
-		?>
-		<?php
 
 	session_start();
 
@@ -42,7 +38,7 @@
 			echo "<br>database is not set up properly/was not able to properly connect to dB. This page is invalid<br>";
 			die($db_connection->connect_error);
 		}else{
-			echo "<img src=./21b9dfe29ac942daae2c96d9789f9ccc.jpg width=\"150\" height=\"150\" id=\"pic\" class=\"center\"></img>";
+			#echo "<img src=./21b9dfe29ac942daae2c96d9789f9ccc.jpg width=\"150\" height=\"150\" id=\"pic\" class=\"center\"></img>";
 		}
 		$values = $db_connection->query("select * from users where username='$username' and password='$password'");
 		if($values->num_rows > 0){
@@ -134,11 +130,7 @@ LABEL;
 
  ?>
 
- <h5>Change motivational picture:</h5>
-<form action="<?php $_SERVER['PHP_SELF'] ?>">
- <input type="file" id="newPic" name="newPic">
-  <input class = "btn btn-default" type="submit" onclick="changePic()">
-</form>
+
 	<div class="row">
 
 		<h1 class="col-md-11">Goals and Plans</h1>
@@ -315,5 +307,13 @@ LABEL;
 		document.getElementById("currMonth").innerHTML = monthStr(month) + " " + year + " Schedule";
 	}
 	</script>
+	<div class="container">
+		 <h5>Change motivational picture:</h5>
+		 <img src="./21b9dfe29ac942daae2c96d9789f9ccc.jpg" width="150" height="150" id="pic" class="center"></img>
+<form action="<?php $_SERVER['PHP_SELF'] ?>">
+ <input type="file" id="newPic" name="newPic">
+  <input class = "btn btn-default" type="submit" onclick="changePic()">
+</form>
+	</div>
 </body>
 </html>
