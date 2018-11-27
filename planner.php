@@ -1,4 +1,24 @@
-<?php
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" >
+	<link rel="stylesheet" href="./css/main.css">
+</head>
+<body>
+	<div class="container">
+
+		<h1>Goals and Plans</h1>
+		<?php
+			echo "<img src=./21b9dfe29ac942daae2c96d9789f9ccc.jpg width=\"150\" height=\"150\" class=\"center\"></img>";
+			#echo "<input type="file" name="newImage">";
+		?>
+		<?php
 
 	if (isset($_POST["login"])) {
 		session_start();
@@ -12,8 +32,9 @@
 		if ($db_connection->connect_error) {
 			echo "<br>database is not set up properly/was not able to properly connect to dB. This page is invalid<br>";
 			die($db_connection->connect_error);
+		}else{
+			echo "<img src=./21b9dfe29ac942daae2c96d9789f9ccc.jpg width=\"300\" height=\"300\" class=\"center\"></img>";
 		}
-
 		$values = $db_connection->query("select * from users where username='$username' and password='$password'");
 		if($values->num_rows > 0){
 	      $row = $values->fetch_assoc();
@@ -34,21 +55,6 @@
 	}
 
  ?>
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
-	<link rel="stylesheet" href="bootstrap/css/bootstrap.min.css" >
-	<link rel="stylesheet" href="./css/main.css">
-</head>
-<body>
-	<div class="container">
-
-		<h1>Goals and Plans</h1>
 		<h2 id = "today">Welcome <?php echo $_SESSION['currentfirst']; ?>, today is: </h2>
 		<h3 id = "currMonth">January 2019 Schedule</h3>
 
