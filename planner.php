@@ -169,17 +169,17 @@ LABEL;
 				</div>
 
 			</fieldset>
-			<div id="dialog" hidden="hidden" >
-				<div class = "form-group">
-					<label for = "text">Edit Task Title:</label>
-					<input type = "text" class = "form-control" name="taskname">
-				</div>
+		</div>
+	</div>
+	<div id="dialog" hidden="hidden" >
+		<div class = "form-group">
+			<label for = "text">Edit Task Title:</label>
+			<input type = "text" class = "form-control" name="taskname">
+		</div>
 
-				<div class = "form-group">
-					<label for = "text">Edit Details:</label>
-					<textarea rows = "4" class = "form-control" name="description"></textarea>
-				</div>
-			</div>
+		<div class = "form-group">
+			<label for = "text">Edit Details:</label>
+			<textarea rows = "4" class = "form-control" name="description"></textarea>
 		</div>
 	</div>
 
@@ -209,13 +209,14 @@ LABEL;
 		let newDesc;
 		$(document).ready(function() {
 			$("#dialog").dialog({
-
 				buttons: {
 					'OK': function () {
-						let name = $('input[name="taskname"]').val();
-						let description = $('textarea[name="description"]').val();
-						newTask = name;
-						newDesc = description;
+						newTask = $('input[name="taskname"]').val();
+						newDesc = $('textarea[name="description"]').val();
+
+						$.post('./manageTask.php', {key:name, newT: newTask, newD: newDesc, whatToDo:"edit"}, function(response) {
+							console.log("Output: "+response);
+						});
 						$(this).dialog('close');
 					},
 					'Cancel': function () {
@@ -223,14 +224,15 @@ LABEL;
 					}
 				},
 
+
 				close: function(event, ui) {
-					$.post('./manageTask.php', {key:name, newT: newTask, newD: description, whatToDo:"edit"}, function(response) {
-						console.log("Output: "+response);
-					});
+					window.location.reload(true);
+
+					dialog.remove();
 				}
 			});
 		});
-		location.reload();
+
 	}
 	function removeTask(name,value){
 
