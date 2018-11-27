@@ -1,3 +1,45 @@
+<?php
+
+	if(isset($_POST['tasksubmit'])){
+		session_start();
+
+		$username = trim($_SESSION["username"]);
+		$password = trim($_SESSION["password"]);
+
+		$host="localhost";
+		$user="dbuser";
+		$serverpassword="";
+		$database="scheduleusers";
+		$db_connection=new mysqli($host, $user, $serverpassword, $database);
+		if ($db_connection->connect_error) {
+			echo "<br>database is not set up properly/was not able to properly connect to dB. This page is invalid<br>";
+			die($db_connection->connect_error);
+		}
+
+		$values = $db_connection->query("select todo from users where username='$username' and password='$password'");
+		if($values->num_rows > 0){
+	      $row = $values->fetch_assoc();
+		  if(isset($row['todo'])){
+			  $todo = unserialize($row['todo']);
+			  $todo[$_POST['taskname']] = $_POST['description'];
+			  $todoserialized = serialize($todo);
+			  $db_connection->query("update users set todo='$todoserialized' where username='$username' and password='$password'");
+		  } else{
+			  $todo = array($_POST['taskname'] => $_POST['description']);
+			  $todoserialized = serialize($todo);
+			  $db_connection->query("update users set todo='$todoserialized' where username='$username' and password='$password'");
+
+		  }
+
+	  	}
+
+		$_SESSION['fromTask'] = "true";
+		header("Location: planner.php");
+	}
+
+ ?>
+
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -12,37 +54,37 @@
 
 		<h1>Task Edit</h1> <!-- This title doesn't sound right. Feel free to change it to something more descriptive. -->
 		<h2 id = "today"></h2>
-		
+
 		<hr>
-		
-		<form method = "post">
+
+		<form method = "post" action="<?php $_SERVER['PHP_SELF'] ?>">
 		<div class = "form-group">
 			<label for = "text">Task:</label>
-			<input type = "text" class = "form-control">
+			<input type = "text" class = "form-control" name="taskname">
 		</div>
-		
+
 		<div class = "form-group">
 			<label for = "text">Details:</label>
-			<textarea rows = "4" class = "form-control"></textarea>
+			<textarea rows = "4" class = "form-control" name="description"></textarea>
 		</div>
-		
+
 		<div class = "form-group">
 			<label for = "text">Deadline:</label>
 			<input type = "date" class = "form-control">
 		</div>
-		
+
 		<br>
-		<button type = "submit" class = "btn btn-default">Submit</button> &nbsp;
+		<button type = "submit" class = "btn btn-default" name="tasksubmit">Submit</button> &nbsp;
 		<button type = "button" class = "btn btn-default">Cancel</button>
 		</form>
-		
+
 	</div>
 
 	<script src="bootstrap/jquery-3.2.1.min.js"></script>
 	<script src="bootstrap/js/bootstrap.min.js"></script>
 	<script>
 		initialize();
-		
+
 		function initialize() {
 			var d = new Date();
 			var str = d.toDateString();
