@@ -213,7 +213,7 @@ LABEL;
 
 	function editTask(name,value){
 		let newTask;
-		let valTask;
+		let newDesc;
 		$(document).ready(function() {
 			$("#dialog").dialog({
 
@@ -221,7 +221,8 @@ LABEL;
 					'OK': function () {
 						let name = $('input[name="taskname"]').val();
 						let description = $('input[name="description"]').val();
-						console.log(name + " " + description);
+						newTask = name;
+						newDesc = newDesc;
 						$(this).dialog('close');
 					},
 					'Cancel': function () {
