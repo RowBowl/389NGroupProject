@@ -43,28 +43,28 @@
 		}
 		$values = $db_connection->query("select * from users where username='$username' and password='$password'");
 		if($values->num_rows > 0){
-	      $row = $values->fetch_assoc();
-		  $firstname= $row['firstname'];
-		  $lastname = $row['lastname'];
-		  $_SESSION['firstname'] = $firstname;
-		  $_SESSION['currentuser'] = $username;
-		  if (isset($row['todo'])){
-			  $_SESSION['todo']= $row['todo'];
+			$row = $values->fetch_assoc();
+			$firstname= $row['firstname'];
+			$lastname = $row['lastname'];
+			$_SESSION['firstname'] = $firstname;
+			$_SESSION["username"] = $username;
+			$_SESSION["password"] = $password;
+			if (isset($row['todo']) && is_array($row['todo'])){
+				$_SESSION['todo']= $row['todo'];
 
-		  }
-		  if(isset($row['completed'])){
-			  $_SESSION['completed']= $row['completed'];
-		  }
-	  	} else{
-		  #print("CANT FIND ENTRY");
+			}
+			if(isset($row['completed']) && is_array($row['completed'])){
+				$_SESSION['completed']= $row['completed'];
+			}
+		} else{
+			#print("CANT FIND ENTRY");
 
-		  $db_connection->close();
+			$db_connection->close();
 
-		  header("Location: index.html");
-	  	}
+			header("Location: index.html");
+		}
 
-		$_SESSION["username"] = $username;
-		$_SESSION["password"] = $password;
+
 		$firstname = $_SESSION['firstname'];
 
 		if(isset($_SESSION['fromTask'])){ unset($_SESSION['fromTask']);}
@@ -74,20 +74,21 @@
 	}
 
 	function showtasks(){
-		if(!(isset($_SESSION['todo']) ) || $_SESSION['todo'] == null) {
+		if(!(isset($_SESSION['todo']) ) || $_SESSION['todo'] == null || unserialize($_SESSION['todo'] )== null) {
 			echo "<p><font size = '5'> No tasks yet</font></p>";
 		} else{
 
 			$todouns = unserialize($_SESSION['todo']);
+
 			foreach($todouns as $key => $value){
 				echo <<<LABEL
-				<div class="panel panel-default">
+				<div class="panel panel-default" id='{$key}{$value}'>
 				<div class = "panel-heading">
 				<div class = "row">
 				<div class = "task-text col-lg-9"><font size = "5">$key</font></div>
-				<button type = "button" class = "btn btn-info">...</button>
-				<button type = "button" class = "btn btn-danger move-right">X</button>
-				<button type = "button" class = "btn btn-success remove">></button>
+				<button type = "button"  class = "btn btn-info" name = "editTask" onclick="window.location='manageTask.php';">...</button>
+				<button type = "button"  class = "btn btn-danger" onclick="removeTask('$key','$value')">X</button>
+				<button type = "button"  class = "btn btn-success" onclick="completeTask('$key','$value')">></button>
 				</div>
 				</div>
 				<div class = "panel-body">$value</div>
@@ -97,6 +98,36 @@ LABEL;
 			}
 		}
 	}
+
+	function showCompleted(){
+		if(!(isset($_SESSION['completed']) ) || $_SESSION['completed'] == null || unserialize($_SESSION['completed']) == null) {
+			echo "<p><font size = '5'> No completed tasks yet</font></p>";
+		} else{
+
+			$compuns = unserialize($_SESSION['completed']);
+
+			foreach($compuns as $key => $value){
+				echo <<<LABEL
+				<div class = "panel panel-default" id='{$key}{$value}'>
+					<div class = "panel-heading">
+
+						<div class = "row">
+							<div class = "task-text col-lg-10"><font size = "5">$key</font></div>
+							<button type = "button" class = "btn btn-info remove">...</button>
+							<button type = "button" class="btn btn-danger  move-left" onclick="removeTask('$key','$value')">X</button>
+
+						</div>
+
+					</div>
+					<div class = "panel-body">$value</div>
+				</div>
+LABEL;
+
+			}
+		}
+	}
+
+
 
  ?>
 
@@ -109,7 +140,7 @@ LABEL;
 
 		<h1 class="col-md-11">Goals and Plans</h1>
 		<br>
-		<button type = "button" class="btn btn-danger col-md-1">Logout</button>
+		<button type = "button" class="btn btn-danger col-md-1" onclick="window.location='logout.php';">Logout</button>
 	</div>
 
 
@@ -126,7 +157,7 @@ LABEL;
 				<legend>Goals and Tasks</legend>
 
 				<div class="tasks-to-do" id = "tasks">
-					<?php showtasks() ?>
+					<?php showtasks(); ?>
 
 				</div>
 
@@ -138,19 +169,8 @@ LABEL;
 				<legend>Completed Tasks</legend>
 
 				<div class = "tasks-completed">
-					<div class = "panel panel-default">
-						<div class = "panel-heading">
 
-							<div class = "row">
-								<div class = "task-text col-lg-10"><font size = "5">COMPLETED TASK 1</font></div>
-								<button type = "button" class = "btn btn-info remove">...</button>
-								<button type = "button" class="btn btn-danger  move-left">X</button>
-
-							</div>
-
-						</div>
-					<div class = "panel-body">This is another description of the task. This is another description of the task. This is another description of the task. This is another description of the task.</div>
-					</div>
+					<?php showCompleted(); ?>
 				</div>
 
 			</fieldset>
@@ -171,9 +191,27 @@ LABEL;
 			year = d.getFullYear();
 			document.getElementById("today").innerHTML +=  str;
 			updateCurrMonth();
+
 		}
 
+		function removeTask(name,value){
 
+			$.post('./manageTask.php', {key:name, whatToDo:"remove"}, function(response) {
+				// Log the response to the console
+				console.log("Response: "+response);
+			});
+			document.getElementById(`${name}${value}`).outerHTML = "";
+
+
+		}
+		function completeTask(name,value){
+			$.post('./manageTask.php', {key:name, whatToDo:"complete"}, function(response) {
+				// Log the response to the console
+				console.log("Response: "+response);
+			});
+			document.getElementById(`${name}${value}`).outerHTML = "";
+			location.reload();
+		}
 
 		function monthStr(arg) {
 			if (arg == 0)

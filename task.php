@@ -3,9 +3,13 @@
 	if(isset($_POST['tasksubmit'])){
 		session_start();
 
+
+
 		$username = trim($_SESSION["username"]);
 		$password = trim($_SESSION["password"]);
-
+		if( isset($_SESSION['editing']) ) {
+			$editingTask = $_SESSION['editing'];
+		}
 		$host="localhost";
 		$user="dbuser";
 		$serverpassword="";
@@ -18,25 +22,45 @@
 
 		$values = $db_connection->query("select todo from users where username='$username' and password='$password'");
 		if($values->num_rows > 0){
-	      $row = $values->fetch_assoc();
-		  if(isset($row['todo']) || $_SESSION['todo'] == null){
-			  $todo = unserialize($row['todo']);
-			  $todo[$_POST['taskname']] = $_POST['description'];
-			  $todoserialized = serialize($todo);
-			  $db_connection->query("update users set todo='$todoserialized' where username='$username' and password='$password'");
-		  } else{
-			  $todo = array($_POST['taskname'] => $_POST['description']);
-			  $todoserialized = serialize($todo);
-			  $db_connection->query("update users set todo='$todoserialized' where username='$username' and password='$password'");
+			$row = $values->fetch_assoc();
+			if(isset($row['todo']) && $_SESSION['todo'] != null){
+				$todo = unserialize($row['todo']);
+				if(isset($editingTask)){
+					$todo[$editingTask] = $_POST['description'];
+					changeKey($todo, $editingTask,$_POST['taskname'] );
+					$todoserialized = serialize($todo);
 
-		  }
+				} else{
+					$todo[$_POST['taskname']] = $_POST['description'];
+					$todoserialized = serialize($todo);
+				}
+				$_SESSION['todo'] = $todoserialized;
+				$db_connection->query("update users set todo='$todoserialized' where username='$username' and password='$password'");
+			} else{
+				$todo = array($_POST['taskname'] => $_POST['description']);
+				$todoserialized = serialize($todo);
+				$_SESSION['todo'] = $todoserialized;
+				$db_connection->query("update users set todo='$todoserialized' where username='$username' and password='$password'");
 
-	  	}
-
-		$_SESSION['fromTask'] = "true";
-		header("Location: planner.php");
+			}
+			unset($editingTask);
+			unset($_SESSION['editing']);
+			$_SESSION['fromTask'] = "true";
+			header("Location: planner.php");
+		}
 	}
 
+	function changeKey($arr, $key1, $key2){
+		$i = array_search($key1, $keys);
+		$keys = array_keys($arr);
+
+		if ($i) {
+			$keys[$i] = $key2;
+			$arr = array_combine($keys, $arr);
+		}
+
+		return $arr;
+	}
  ?>
 
 
