@@ -12,8 +12,6 @@
 </head>
 <body>
 	<div class="container">
-
-		<h1>Goals and Plans</h1>
 		<?php
 			echo "<img src=./21b9dfe29ac942daae2c96d9789f9ccc.jpg width=\"150\" height=\"150\" class=\"center\"></img>";
 			#echo "<input type="file" name="newImage">";
@@ -55,6 +53,14 @@
 	}
 
  ?>
+ <h3>Change motivational picture:</h3>
+<form action="/action_page.php">
+  Select a file: <input type="file" name="myFile">
+  <input type="submit">
+</form>
+		<h1>Goals and Plans</h1>
+		
+
 		<h2 id = "today">Welcome <?php echo $_SESSION['currentfirst']; ?>, today is: </h2>
 		<h3 id = "currMonth">January 2019 Schedule</h3>
 
