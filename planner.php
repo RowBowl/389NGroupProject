@@ -100,9 +100,9 @@ LABEL;
  ?>
 
  <h5>Change motivational picture:</h5>
-<form action="/action_page.php">
+<form action="<?php $_SERVER['PHP_SELF'] ?>">
  <input type="file" name="myFile">
-  <input class = "btn btn-default" type="submit">
+  <input class = "btn btn-default" type="submit" onclick="changePic()">
 </form>
 	<div class="row">
 
