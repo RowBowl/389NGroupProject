@@ -85,7 +85,7 @@
 				<div class = "panel-heading">
 				<div class = "row">
 				<div class = "task-text col-lg-9"><font size = "5">$key</font></div>
-				<button type = "button"  class = "btn btn-info"  onclick="editTask('$key','$value')">...</button>
+				<button type = "button"  class = "btn btn-info"  onclick="editTask('$key','$value', 'todoTask')">...</button>
 				<button type = "button"  class = "btn btn-danger" onclick="removeTask('$key','$value')">X</button>
 				<button type = "button"  class = "btn btn-success" onclick="completeTask('$key','$value')">></button>
 				</div>
@@ -112,8 +112,8 @@ LABEL;
 
 						<div class = "row">
 							<div class = "task-text col-lg-10"><font size = "5">$key</font></div>
-							<button type = "button" class = "btn btn-info remove">...</button>
-							<button type = "button" class="btn btn-danger  move-left" onclick="removeTask('$key','$value')">X</button>
+							<button type = "button" class = "btn btn-info" onclick="editTask('$key','$value', 'completedTask')">...</button>
+							<button type = "button" class="btn btn-danger" onclick="removeTask('$key','$value')">X</button>
 
 						</div>
 
@@ -204,7 +204,7 @@ LABEL;
 
 	}
 
-	function editTask(name,value){
+	function editTask(name,value,ttype){
 		let newTask;
 		let newDesc;
 		$(document).ready(function() {
@@ -214,7 +214,7 @@ LABEL;
 						newTask = $('input[name="taskname"]').val();
 						newDesc = $('textarea[name="description"]').val();
 
-						$.post('./manageTask.php', {key:name, newT: newTask, newD: newDesc, whatToDo:"edit"}, function(response) {
+						$.post('./manageTask.php', {key:name, type:ttype, newT: newTask, newD: newDesc, whatToDo:"edit"}, function(response) {
 							console.log("Output: "+response);
 						});
 						$(this).dialog('close');

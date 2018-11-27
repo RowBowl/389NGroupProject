@@ -74,17 +74,29 @@
             $values = $db_connection->query("select * from users where username='$username' and password='$password'");
     		if($values->num_rows > 0){
                 $row = $values->fetch_assoc();
-                $todo = $row['todo'];
 
-                $todouns = unserialize($todo);
+                if($_POST['type'] == 'todoTask'){
+                    $list = $row['todo'];
+
+                } else {
+                    $list = $row['completed'];
+                }
+                $uns = unserialize($list);
                 $newTask = $_POST['newT'];
                 $newDesc = $_POST['newD'];
 
-                unset($todouns[$taskKey]);
-                $todouns[$newTask] = $newDesc;
-                $new = serialize($todouns);
-                $_SESSION['todo'] = $new;
-                $db_connection->query("update users set todo='$new' where username='$username' and password='$password'");
+                unset($uns[$taskKey]);
+                $uns[$newTask] = $newDesc;
+                $new = serialize($uns);
+                if($_POST['type'] == 'todoTask'){
+                    $_SESSION['todo'] = $new;
+                    $db_connection->query("update users set todo='$new' where username='$username' and password='$password'");
+
+                } else {
+                    $_SESSION['completed'] = $new;
+                    $db_connection->query("update users set completed='$new' where username='$username' and password='$password'");
+
+                }
                 echo "SUCCESS";
             }
 
