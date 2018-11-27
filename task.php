@@ -19,7 +19,7 @@
 		$values = $db_connection->query("select todo from users where username='$username' and password='$password'");
 		if($values->num_rows > 0){
 	      $row = $values->fetch_assoc();
-		  if(isset($row['todo'])){
+		  if(isset($row['todo']) || $_SESSION['todo'] == null){
 			  $todo = unserialize($row['todo']);
 			  $todo[$_POST['taskname']] = $_POST['description'];
 			  $todoserialized = serialize($todo);

@@ -74,9 +74,10 @@
 	}
 
 	function showtasks(){
-		if(!(isset($_SESSION['todo']) )) {
+		if(!(isset($_SESSION['todo']) ) || $_SESSION['todo'] == null) {
 			echo "<p><font size = '5'> No tasks yet</font></p>";
 		} else{
+
 			$todouns = unserialize($_SESSION['todo']);
 			foreach($todouns as $key => $value){
 				echo <<<LABEL
