@@ -14,6 +14,7 @@
 </head>
 <body>
 	<div class="container">
+
 		<?php
 			echo "<img src=./21b9dfe29ac942daae2c96d9789f9ccc.jpg width=\"150\" height=\"150\" id=\"pic\" class=\"center\"></img>";
 			#echo "<input type="file" name="newImage">";
