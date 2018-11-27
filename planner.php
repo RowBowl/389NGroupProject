@@ -1,9 +1,17 @@
 <?php
 
-	if (isset($_POST["login"])) {
-		session_start();
-		$username = trim($_POST["username"]);
-	    $password = trim($_POST["password"]);
+	session_start();
+
+	if (isset($_POST["submitform"]) || isset($_SESSION['fromTask'])) {
+
+		if(isset($_POST["username"]) && isset($_POST["password"])){
+			$username = trim($_POST["username"]);
+			$password = trim($_POST["password"]);
+
+		} else{
+			$username = trim($_SESSION["username"]);
+			$password = trim($_SESSION["password"]);
+		}
 		$host="localhost";
 		$user="dbuser";
 		$serverpassword="";
@@ -17,8 +25,17 @@
 		$values = $db_connection->query("select * from users where username='$username' and password='$password'");
 		if($values->num_rows > 0){
 	      $row = $values->fetch_assoc();
-		 $_SESSION['currentfirst']= $row['firstname'];
-		 $_SESSION['currentlast'] = $row['lastname'];
+		  $firstname= $row['firstname'];
+		  $lastname = $row['lastname'];
+		  $_SESSION['firstname'] = $firstname;
+		  $_SESSION['currentuser'] = $username;
+		  if (isset($row['todo'])){
+			  $_SESSION['todo']= $row['todo'];
+
+		  }
+		  if(isset($row['completed'])){
+			  $_SESSION['completed']= $row['completed'];
+		  }
 	  	} else{
 		  #print("CANT FIND ENTRY");
 
@@ -27,10 +44,38 @@
 		  header("Location: index.html");
 	  	}
 
+		$_SESSION["username"] = $username;
+		$_SESSION["password"] = $password;
+		$firstname = $_SESSION['firstname'];
+
+		if(isset($_SESSION['fromTask'])){ unset($_SESSION['fromTask']);}
 
 		$db_connection->close();
 
+	}
 
+	function showtasks(){
+		if(!(isset($_SESSION['todo']) )) {
+			echo "<p><font size = '5'> No tasks yet</font></p>";
+		} else{
+			$todouns = unserialize($_SESSION['todo']);
+			foreach($todouns as $key => $value){
+				echo <<<LABEL
+				<div class="panel panel-default">
+				<div class = "panel-heading">
+				<div class = "row">
+				<div class = "task-text col-lg-9"><font size = "5">$key</font></div>
+				<button type = "button" class = "btn btn-info">...</button>
+				<button type = "button" class = "btn btn-danger move-right">X</button>
+				<button type = "button" class = "btn btn-success remove">></button>
+				</div>
+				</div>
+				<div class = "panel-body">$value</div>
+				</div>
+LABEL;
+
+			}
+		}
 	}
 
  ?>
@@ -47,9 +92,14 @@
 </head>
 <body>
 	<div class="container">
+		<div class="row">
 
-		<h1>Goals and Plans</h1>
-		<h2 id = "today">Welcome <?php echo $_SESSION['currentfirst']; ?>, today is: </h2>
+			<h1 class="col-md-11">Goals and Plans</h1>
+			<br>
+			<button type = "button" class="btn btn-danger col-md-1">Logout</button>
+		</div>
+
+		<h2 id = "today">Welcome <?php echo $_SESSION['firstname']; ?>, today is: </h2>
 		<h3 id = "currMonth">January 2019 Schedule</h3>
 
 		<!-- These look pretty bad visually. Feel free to change them up. -->
@@ -61,32 +111,11 @@
 				<legend>Goals and Tasks</legend>
 
 				<div class="tasks-to-do" id = "tasks">
-					<div class="panel panel-default">
-						<div class = "panel-heading">
-							<div class = "row">
-								<div class = "task-text col-lg-9"><font size = "5">TASK 1</font></div>
-								<button type = "button" class = "btn btn-info">...</button>
-								<button type = "button" class = "btn btn-danger move-right">X</button>
-								<button type = "button" class = "btn btn-success remove">></button>
-							</div>
-						</div>
-						<div class = "panel-body">This is a description of the task. This is a description of the task. This is a description of the task. This is a description of the task.</div>
-					</div>
+					<?php showtasks() ?>
 
-					<div class="panel panel-default">
-						<div class = "panel-heading">
-							<div class = "row">
-								<div class = "task-text col-lg-9"><font size = "5">TASK 2</font></div>
-								<button type = "button" class = "btn btn-info">...</button>
-								<button type = "button" class = "btn btn-danger move-right">X</button>
-								<button type = "button" class = "btn btn-success remove">></button>
-							</div>
-						</div>
-						<div class = "panel-body">This is a description of the task. This is a description of the task. This is a description of the task. This is a description of the task.</div>
-					</div>
 				</div>
 
-				<button type = "button" class = "btn btn-primary btn-lg btn-block" id = "add-task">+</button>
+				<button type = "button" class = "btn btn-primary btn-lg btn-block" id = "add-task" onclick="window.location='task.php';">+</button>
 
 			</fieldset>
 
@@ -128,6 +157,8 @@
 			document.getElementById("today").innerHTML +=  str;
 			updateCurrMonth();
 		}
+
+
 
 		function monthStr(arg) {
 			if (arg == 0)
