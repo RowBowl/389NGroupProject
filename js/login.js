@@ -1,22 +1,13 @@
 
 //Client-side validation
-window.onsubmit = main;
+window.onsubmit = checkLogin;
 
 var attempts = 0;
-function main(){
-
-    if( !(checkLogin()) ){
-        return false;
-    }
-
-
-}
 
 function checkLogin(){
-
     let username = trim(document.getElementById("username").value);
     let password = trim(document.getElementById("password").value);
-    let text = trim(document.getElementById("bottomtext"));
+    let text = document.getElementById("bottomtext");
 
     let regexuser = /^[A-Za-z]+$/;
     let regexpass = /^[A-Za-z0-9]+$/
