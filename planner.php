@@ -14,11 +14,131 @@
 </head>
 <body>
 	<div class="container">
-	<?php
+
+		<?php
+			echo "<img src=./21b9dfe29ac942daae2c96d9789f9ccc.jpg width=\"150\" height=\"150\" id=\"pic\" class=\"center\"></img>";
+			#echo "<input type="file" name="newImage">";
+		?>
+		<?php
+
 	session_start();
-	?>
+
+	if (isset($_POST["submitform"]) || isset($_SESSION['fromTask'])) {
+
+		if(isset($_POST["username"]) && isset($_POST["password"])){
+			$username = trim($_POST["username"]);
+			$password = trim($_POST["password"]);
+
+		} else{
+			$username = trim($_SESSION["username"]);
+			$password = trim($_SESSION["password"]);
+		}
+		$host="localhost";
+		$user="dbuser";
+		$serverpassword="";
+		$database="scheduleusers";
+		$db_connection=new mysqli($host, $user, $serverpassword, $database);
+		if ($db_connection->connect_error) {
+			echo "<br>database is not set up properly/was not able to properly connect to dB. This page is invalid<br>";
+			die($db_connection->connect_error);
+		}else{
+			echo "<img src=./21b9dfe29ac942daae2c96d9789f9ccc.jpg width=\"150\" height=\"150\" id=\"pic\" class=\"center\"></img>";
+		}
+		$values = $db_connection->query("select * from users where username='$username' and password='$password'");
+		if($values->num_rows > 0){
+			$row = $values->fetch_assoc();
+			$firstname= $row['firstname'];
+			$lastname = $row['lastname'];
+			$_SESSION['firstname'] = $firstname;
+			$_SESSION["username"] = $username;
+			$_SESSION["password"] = $password;
+			if (isset($row['todo']) && is_array($row['todo'])){
+				$_SESSION['todo']= $row['todo'];
+
+			}
+			if(isset($row['completed']) && is_array($row['completed'])){
+				$_SESSION['completed']= $row['completed'];
+			}
+		} else{
+			#print("CANT FIND ENTRY");
+
+			$db_connection->close();
+
+			header("Location: index.html");
+		}
 
 
+		$firstname = $_SESSION['firstname'];
+
+		if(isset($_SESSION['fromTask'])){ unset($_SESSION['fromTask']);}
+
+		$db_connection->close();
+
+	}
+
+	function showtasks(){
+		if(!(isset($_SESSION['todo']) ) || $_SESSION['todo'] == null || unserialize($_SESSION['todo'] )== null) {
+			echo "<p><font size = '5'> No tasks yet</font></p>";
+		} else{
+
+			$todouns = unserialize($_SESSION['todo']);
+
+			foreach($todouns as $key => $value){
+				echo <<<LABEL
+				<div class="panel panel-default" id='{$key}{$value}'>
+				<div class = "panel-heading">
+				<div class = "row">
+				<div class = "task-text col-lg-9"><font size = "5">$key</font></div>
+				<button type = "button"  class = "btn btn-info"  onclick="editTask('$key','$value')">...</button>
+				<button type = "button"  class = "btn btn-danger" onclick="removeTask('$key','$value')">X</button>
+				<button type = "button"  class = "btn btn-success" onclick="completeTask('$key','$value')">></button>
+				</div>
+				</div>
+				<div class = "panel-body">$value</div>
+				</div>
+LABEL;
+
+			}
+		}
+	}
+
+	function showCompleted(){
+		if(!(isset($_SESSION['completed']) ) || $_SESSION['completed'] == null || unserialize($_SESSION['completed']) == null) {
+			echo "<p><font size = '5'> No completed tasks yet</font></p>";
+		} else{
+
+			$compuns = unserialize($_SESSION['completed']);
+
+			foreach($compuns as $key => $value){
+				echo <<<LABEL
+				<div class = "panel panel-default" id='{$key}{$value}'>
+					<div class = "panel-heading">
+
+						<div class = "row">
+							<div class = "task-text col-lg-10"><font size = "5">$key</font></div>
+							<button type = "button" class = "btn btn-info remove">...</button>
+							<button type = "button" class="btn btn-danger  move-left" onclick="removeTask('$key','$value')">X</button>
+
+						</div>
+
+					</div>
+					<div class = "panel-body">$value</div>
+				</div>
+LABEL;
+
+			}
+		}
+	}
+
+
+
+ ?>
+
+ <h5>Change motivational picture:</h5>
+<form action="<?php $_SERVER['PHP_SELF'] ?>">
+ <input type="file" id="newPic" name="newPic">
+  <input class = "btn btn-default" type="submit" onclick="changePic()">
+</form>
 	<div class="row">
 
 		<h1 class="col-md-11">Goals and Plans</h1>
@@ -194,126 +314,5 @@
 		document.getElementById("currMonth").innerHTML = monthStr(month) + " " + year + " Schedule";
 	}
 	</script>
- <div class="container">
-
-		<?php
-
-
-	if (isset($_POST["submitform"]) || isset($_SESSION['fromTask'])) {
-
-		if(isset($_POST["username"]) && isset($_POST["password"])){
-			$username = trim($_POST["username"]);
-			$password = trim($_POST["password"]);
-
-		} else{
-			$username = trim($_SESSION["username"]);
-			$password = trim($_SESSION["password"]);
-		}
-		$host="localhost";
-		$user="dbuser";
-		$serverpassword="";
-		$database="scheduleusers";
-		$db_connection=new mysqli($host, $user, $serverpassword, $database);
-		if ($db_connection->connect_error) {
-			echo "<br>database is not set up properly/was not able to properly connect to dB. This page is invalid<br>";
-			die($db_connection->connect_error);
-		}else{
-			echo "<img src=./21b9dfe29ac942daae2c96d9789f9ccc.jpg width=\"150\" height=\"150\" id=\"pic\" class=\"center\"></img>";
-		}
-		$values = $db_connection->query("select * from users where username='$username' and password='$password'");
-		if($values->num_rows > 0){
-			$row = $values->fetch_assoc();
-			$firstname= $row['firstname'];
-			$lastname = $row['lastname'];
-			$_SESSION['firstname'] = $firstname;
-			$_SESSION["username"] = $username;
-			$_SESSION["password"] = $password;
-			if (isset($row['todo']) && is_array($row['todo'])){
-				$_SESSION['todo']= $row['todo'];
-
-			}
-			if(isset($row['completed']) && is_array($row['completed'])){
-				$_SESSION['completed']= $row['completed'];
-			}
-		} else{
-			#print("CANT FIND ENTRY");
-
-			$db_connection->close();
-
-			header("Location: index.html");
-		}
-
-
-		$firstname = $_SESSION['firstname'];
-
-		if(isset($_SESSION['fromTask'])){ unset($_SESSION['fromTask']);}
-
-		$db_connection->close();
-
-	}
-
-	function showtasks(){
-		if(!(isset($_SESSION['todo']) ) || $_SESSION['todo'] == null || unserialize($_SESSION['todo'] )== null) {
-			echo "<p><font size = '5'> No tasks yet</font></p>";
-		} else{
-
-			$todouns = unserialize($_SESSION['todo']);
-
-			foreach($todouns as $key => $value){
-				echo <<<LABEL
-				<div class="panel panel-default" id='{$key}{$value}'>
-				<div class = "panel-heading">
-				<div class = "row">
-				<div class = "task-text col-lg-9"><font size = "5">$key</font></div>
-				<button type = "button"  class = "btn btn-info"  onclick="editTask('$key','$value')">...</button>
-				<button type = "button"  class = "btn btn-danger" onclick="removeTask('$key','$value')">X</button>
-				<button type = "button"  class = "btn btn-success" onclick="completeTask('$key','$value')">></button>
-				</div>
-				</div>
-				<div class = "panel-body">$value</div>
-				</div>
-LABEL;
-
-			}
-		}
-	}
-
-	function showCompleted(){
-		if(!(isset($_SESSION['completed']) ) || $_SESSION['completed'] == null || unserialize($_SESSION['completed']) == null) {
-			echo "<p><font size = '5'> No completed tasks yet</font></p>";
-		} else{
-
-			$compuns = unserialize($_SESSION['completed']);
-
-			foreach($compuns as $key => $value){
-				echo <<<LABEL
-				<div class = "panel panel-default" id='{$key}{$value}'>
-					<div class = "panel-heading">
-
-						<div class = "row">
-							<div class = "task-text col-lg-10"><font size = "5">$key</font></div>
-							<button type = "button" class = "btn btn-info remove">...</button>
-							<button type = "button" class="btn btn-danger  move-left" onclick="removeTask('$key','$value')">X</button>
-
-						</div>
-
-					</div>
-					<div class = "panel-body">$value</div>
-				</div>
-LABEL;
-
-			}
-		}
-	}
-
-
-
- ?>
-  <h5>Change motivational picture:</h5>
-<form action="<?php $_SERVER['PHP_SELF'] ?>">
- <input type="file" id="newPic" name="newPic">
-  <input class = "btn btn-default" type="submit" onclick="changePic()">
-</form>
-</div>
 </body>
 </html>
