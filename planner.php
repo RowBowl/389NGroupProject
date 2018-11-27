@@ -220,9 +220,9 @@ LABEL;
 				buttons: {
 					'OK': function () {
 						let name = $('input[name="taskname"]').val();
-						let description = $('input[name="description"]').val();
+						let description = $('textarea[name="description"]').val();
 						newTask = name;
-						newDesc = newDesc;
+						newDesc = description;
 						$(this).dialog('close');
 					},
 					'Cancel': function () {
@@ -231,16 +231,18 @@ LABEL;
 				},
 
 				close: function(event, ui) {
-
+					$.post('./manageTask.php', {key:name, newT: newTask, newD: description, whatToDo:"edit"}, function(response) {
+						console.log("Output: "+response);
+					});
 				}
 			});
 		});
+		location.reload();
 	}
 	function removeTask(name,value){
 
 		$.post('./manageTask.php', {key:name, whatToDo:"remove"}, function(response) {
-			// Log the response to the console
-			console.log("Response: "+response);
+			console.log("Output: "+response);
 		});
 		document.getElementById(`${name}${value}`).outerHTML = "";
 
@@ -248,8 +250,7 @@ LABEL;
 	}
 	function completeTask(name,value){
 		$.post('./manageTask.php', {key:name, whatToDo:"complete"}, function(response) {
-			// Log the response to the console
-			console.log("Response: "+response);
+			console.log("Output: "+response);
 		});
 		document.getElementById(`${name}${value}`).outerHTML = "";
 		location.reload();

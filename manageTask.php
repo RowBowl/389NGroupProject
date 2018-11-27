@@ -32,7 +32,7 @@
                 $uns = unserialize($_SESSION['todo']);
                 $str = 'todo';
             }
-            
+
             unset($uns[$taskKey]);
 
             $new = serialize($uns);
@@ -45,7 +45,7 @@
                 $db_connection->query("update users set completed='$new' where username='$username' and password='$password'");
             }
 
-        } else{
+        } elseif ($whatToDo == "complete"){
             $todouns = unserialize($_SESSION['todo']);
             if(isset($_SESSION['completed']) && $_SESSION['completed'] != null){
                 $compuns = unserialize($_SESSION['completed']);
@@ -70,6 +70,10 @@
             $db_connection->query("update users set todo='$newtodo',completed='$compser' where username='$username' and password='$password'");
 
 
+        } else{
+            $todouns = unserialize($_SESSION['todo']);
+            $newTask = $_SESSION['newT'];
+            echo $newTask;
         }
         $db_connection->close();
 
