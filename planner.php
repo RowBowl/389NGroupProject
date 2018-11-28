@@ -141,11 +141,6 @@ LABEL;
 
 	<h2 id = "today">Welcome <?php echo $_SESSION['firstname']; ?>, today is: </h2>
 
-		<h3 id = "currMonth">January 2019 Schedule</h3>
-
-		<!-- These look pretty bad visually. Feel free to change them up. -->
-		<button type = "button" class = "btn btn-secondary" onclick = "updateMonth(-1)"><</button>
-		<button type = "button" class = "btn btn-secondary" onclick = "updateMonth(1)">></button>
 
 		<div class="row">
 			<fieldset class="col-lg-6">
@@ -170,7 +165,16 @@ LABEL;
 
 			</fieldset>
 		</div>
+
+		<h5>Change motivational picture:</h5>
+		<img src="./21b9dfe29ac942daae2c96d9789f9ccc.jpg" width="300" height="300" id="pic" class="center"></img>
+		<form >
+			<label class="btn btn-default btn-file">
+				Browse <input type="file" style="display: none;" accept="image/*" id="upload">
+			</label>
+		</form>
 	</div>
+	<!--hidden dialogue boxes that show up when pressing "..."!-->
 	<div id="dialog" hidden="hidden" >
 		<div class = "form-group">
 			<label for = "text">Edit Task Title:</label>
@@ -191,16 +195,28 @@ LABEL;
 	var month;
 	var year;
 	initialize();
-	function changePic(){
-		document.getElementById("pic").src=newPic;
-	}
+	$(function(){ //just changes the image, no database saving yet. Feel free to change.
+		$('#upload').change(function(){
+			var input = this;
+			var url = $(this).val();
+			console.log(this + " " + url);
+			var filereader = new FileReader();
+
+			filereader.onload = function (e) {
+				$('#pic').attr('src', e.target.result);
+			}
+			filereader.readAsDataURL(input.files[0]);
+
+		});
+
+	});
 	function initialize() {
 		var d = new Date();
 		var str = d.toDateString();
 		month = d.getMonth();
 		year = d.getFullYear();
 		document.getElementById("today").innerHTML +=  str;
-		updateCurrMonth();
+		//updateCurrMonth();
 
 	}
 
@@ -288,34 +304,7 @@ LABEL;
 		else
 		return "December";
 	}
-
-	function updateMonth(i) {
-		month += i;
-
-		if (month < 0) {
-			month = 11;
-			year--;
-		}
-
-		else if (month > 11) {
-			month = 0;
-			year++;
-		}
-
-		updateCurrMonth();
-	}
-
-	function updateCurrMonth() {
-		document.getElementById("currMonth").innerHTML = monthStr(month) + " " + year + " Schedule";
-	}
 	</script>
-	<div class="container">
-		 <h5>Change motivational picture:</h5>
-		 <img src="./21b9dfe29ac942daae2c96d9789f9ccc.jpg" width="150" height="150" id="pic" class="center"></img>
-<form action="<?php $_SERVER['PHP_SELF'] ?>">
- <input type="file" id="newPic" name="newPic">
-  <input class = "btn btn-default" type="submit" onclick="changePic()">
-</form>
-	</div>
+
 </body>
 </html>
