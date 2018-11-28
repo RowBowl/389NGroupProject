@@ -82,10 +82,7 @@
 			<textarea rows = "4" class = "form-control" name="description"></textarea>
 		</div>
 
-		<div class = "form-group">
-			<label for = "text">Deadline:</label>
-			<input type = "date" class = "form-control">
-		</div>
+		
 
 		<br>
 		<button type = "submit" class = "btn btn-default" name="tasksubmit">Submit</button> &nbsp;
