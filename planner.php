@@ -49,12 +49,13 @@
 			$_SESSION["username"] = $username;
 			$_SESSION["password"] = $password;
 			if (isset($row['todo']) && is_array($row['todo'])){
-				$_SESSION['todo']= $row['todo'];
+				$todoarr= $row['todo'];
 
 			}
 			if(isset($row['completed']) && is_array($row['completed'])){
-				$_SESSION['completed']= $row['completed'];
+				$comparr= $row['completed'];
 			}
+			$datearr= $row['date'];
 		} else{
 			#print("CANT FIND ENTRY");
 
@@ -73,18 +74,19 @@
 	}
 
 	function showtasks(){
-		if(!(isset($_SESSION['todo']) ) || $_SESSION['todo'] == null || unserialize($_SESSION['todo'] )== null) {
+		if(!(isset($todoarr) ) || unserialize($todoarr)== null) {
 			echo "<p><font size = '5'> No tasks yet</font></p>";
 		} else{
 
-			$todouns = unserialize($_SESSION['todo']);
-
+			$todouns = unserialize($todoarr);
+			$datearr = unserialize($datearr);
 			foreach($todouns as $key => $value){
 				echo <<<LABEL
 				<div class="panel panel-default" id='{$key}{$value}'>
 				<div class = "panel-heading">
 				<div class = "row">
 				<div class = "task-text col-lg-9"><font size = "5">$key</font></div>
+				<div class = "date"><font size = "2">Deadline:$datearr[$key]</font></div>
 				<button type = "button"  class = "btn btn-info"  onclick="editTask('$key','$value', 'todoTask')">...</button>
 				<button type = "button"  class = "btn btn-danger" onclick="removeTask('$key','$value')">X</button>
 				<button type = "button"  class = "btn btn-success" onclick="completeTask('$key','$value')">></button>
@@ -99,11 +101,11 @@ LABEL;
 	}
 
 	function showCompleted(){
-		if(!(isset($_SESSION['completed']) ) || $_SESSION['completed'] == null || unserialize($_SESSION['completed']) == null) {
+		if(!(isset($comparr ) || unserialize($comparr) == null) {
 			echo "<p><font size = '5'> No completed tasks yet</font></p>";
 		} else{
 
-			$compuns = unserialize($_SESSION['completed']);
+			$compuns = unserialize($comparr);
 
 			foreach($compuns as $key => $value){
 				echo <<<LABEL

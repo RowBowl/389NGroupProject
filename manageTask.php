@@ -27,19 +27,25 @@
         if($whatToDo == "remove"){
             if(empty(unserialize($_SESSION['todo']))){
                 $uns = unserialize($_SESSION['completed']);
-                $str = 'completed';
             } else{
+                $datearr = unserialize($_SESSION['dateserialized']);
+                $str = 'completed';
                 $uns = unserialize($_SESSION['todo']);
                 $str = 'todo';
             }
 
             unset($uns[$taskKey]);
+            if(isset($datearr)){
+                unset($datearr[$taskKey]);
+                $newdate = serialize($datearr);
+                $_SESSION['dateserialized'] = $newdate;
+            }
 
             $new = serialize($uns);
             $_SESSION[$str] = $new;
 
             if($str == 'todo'){
-                $db_connection->query("update users set todo='$new' where username='$username' and password='$password'");
+                $db_connection->query("update users set todo='$new',date='$newdate' where username='$username' and password='$password'");
 
             } else{
                 $db_connection->query("update users set completed='$new' where username='$username' and password='$password'");
@@ -47,7 +53,9 @@
 
         } elseif ($whatToDo == "complete"){
             $todouns = unserialize($_SESSION['todo']);
-            if(isset($_SESSION['completed']) && $_SESSION['completed'] != null){
+            $datearr = unserialize($_SESSION['dateserialized']);
+
+            if(isset($_SESSION['completed'])){
                 $compuns = unserialize($_SESSION['completed']);
 
             }
@@ -66,8 +74,11 @@
             $newtodo = serialize($todouns);
             $_SESSION['todo'] = $newtodo;
 
+            unset($datearr[$taskKey]);
+            $newdate = serialize($datearr);
+            $_SESSION['dateserialized'] = $newdate;
 
-            $db_connection->query("update users set todo='$newtodo',completed='$compser' where username='$username' and password='$password'");
+            $db_connection->query("update users set todo='$newtodo',completed='$compser',date='$newdate' where username='$username' and password='$password'");
 
 
         } else{
