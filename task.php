@@ -1,16 +1,11 @@
 <?php
-
-	if(isset($_POST['tasksubmit'])	|| isset($_POST['cancel'])){
+	if(isset($_POST['tasksubmit'])){
 		session_start();
-
-		if(isset($_POST['cancel'])){
-			header("Location: planner.php");
-
-		}
-
 		$username = trim($_SESSION["username"]);
 		$password = trim($_SESSION["password"]);
-
+		if( isset($_SESSION['editing']) ) {
+			$editingTask = $_SESSION['editing'];
+		}
 		$host="localhost";
 		$user="dbuser";
 		$serverpassword="";
@@ -20,52 +15,40 @@
 			echo "<br>database is not set up properly/was not able to properly connect to dB. This page is invalid<br>";
 			die($db_connection->connect_error);
 		}
-
-
 		$values = $db_connection->query("select todo from users where username='$username' and password='$password'");
 		if($values->num_rows > 0){
 			$row = $values->fetch_assoc();
-			if(isset($row['todo']) && !(empty($row['todo']))){
+			if(isset($row['todo']) && $_SESSION['todo'] != null){
 				$todo = unserialize($row['todo']);
-				$datearr = unserialize($row['date']);
-
-				$todo[$_POST['taskname']] = $_POST['description'];
-				$datearr[$_POST['taskname']] = $_POST['date'];
-
-
-				$todoserialized = serialize($todo);
-				$dateserialized = serialize($datearr);
-
-
+				if(isset($editingTask)){
+					$todo[$editingTask] = $_POST['description'];
+					changeKey($todo, $editingTask,$_POST['taskname'] );
+					$todoserialized = serialize($todo);
+				} else{
+					$todo[$_POST['taskname']] = $_POST['description'];
+					$todoserialized = serialize($todo);
+				}
 				$_SESSION['todo'] = $todoserialized;
-				$_SESSION['dateserialized'] = $dateserialized;
-
-				$db_connection->query("update users set todo='$todoserialized',date='$dateserialized' where username='$username' and password='$password'");
+				$db_connection->query("update users set todo='$todoserialized' where username='$username' and password='$password'");
 			} else{
 				$todo = array($_POST['taskname'] => $_POST['description']);
-				$datearr = array($_POST['taskname'] => $_POST['date']);
 				$todoserialized = serialize($todo);
-				$dateserialized = serialize($datearr);
 				$_SESSION['todo'] = $todoserialized;
-				$_SESSION['dateserialized'] = $dateserialized;
-				$db_connection->query("update users set todo='$todoserialized',date='$dateserialized' where username='$username' and password='$password'");
-
+				$db_connection->query("update users set todo='$todoserialized' where username='$username' and password='$password'");
 			}
-
+			unset($editingTask);
+			unset($_SESSION['editing']);
 			$_SESSION['fromTask'] = "true";
 			header("Location: planner.php");
 		}
 	}
-
 	function changeKey($arr, $key1, $key2){
 		$i = array_search($key1, $keys);
 		$keys = array_keys($arr);
-
 		if ($i) {
 			$keys[$i] = $key2;
 			$arr = array_combine($keys, $arr);
 		}
-
 		return $arr;
 	}
  ?>
@@ -101,12 +84,12 @@
 
 		<div class = "form-group">
 			<label for = "text">Deadline:</label>
-			<input type = "date" class = "form-control" name='date'>
+			<input type = "date" class = "form-control">
 		</div>
 
 		<br>
 		<button type = "submit" class = "btn btn-default" name="tasksubmit">Submit</button> &nbsp;
-		<button type = "submit" class = "btn btn-default" name="cancel">Cancel</button>
+		<button type = "button" class = "btn btn-default">Cancel</button>
 		</form>
 
 	</div>
@@ -115,7 +98,6 @@
 	<script src="bootstrap/js/bootstrap.min.js"></script>
 	<script>
 		initialize();
-
 		function initialize() {
 			var d = new Date();
 			var str = d.toDateString();
