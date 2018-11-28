@@ -167,9 +167,9 @@ LABEL;
 		</div>
 
 		<img src="./21b9dfe29ac942daae2c96d9789f9ccc.jpg" width="300" height="300" id="pic" class="center"></img>
-		<form >		
+		<form action="upload.php" method=post>		
 			<label class="btn btn-default btn-file">
-				Change motivational picture <input type="file" style="display: none;" accept="image/*" id="upload">
+				Change motivational picture <input type="file" style="display: none;" accept="image/*" id="upload" name="upload">
 			</label>
 		</form>
 	</div>
