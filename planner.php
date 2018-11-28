@@ -172,6 +172,7 @@ LABEL;
 
 			</fieldset>
 		</div>
+
 	</div>
 	<div id="dialog" hidden="hidden" >
 		<div class = "form-group">
