@@ -166,11 +166,10 @@ LABEL;
 			</fieldset>
 		</div>
 
-		<h5>Change motivational picture:</h5>
 		<img src="./21b9dfe29ac942daae2c96d9789f9ccc.jpg" width="300" height="300" id="pic" class="center"></img>
-		<form >
+		<form >		
 			<label class="btn btn-default btn-file">
-				Browse <input type="file" style="display: none;" accept="image/*" id="upload">
+				Change motivational picture <input type="file" style="display: none;" accept="image/*" id="upload">
 			</label>
 		</form>
 	</div>
